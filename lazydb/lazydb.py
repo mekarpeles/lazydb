@@ -2,8 +2,10 @@
 """
     lazydb.py
     ~~~~~~~~~
-    
-    Basic wrapper for shelve (flatfile diskstore)
+    LazyDB is a basic wrapper around the Python shelve flatfilqe dbm
+    module. LazyDB provides a couchdb/S3 like layer of abstraction around
+    shelve, allowing convenient access (read and write) to shelve without
+    sacrificing the convenience of writing pickled python objects to disk.
 
     :authors Mek
     :license GPLv3
@@ -35,6 +37,10 @@ class Db(object):
     def connected(self):
         """Test whether a connection is open"""
         pass
+
+    @property
+    def dict(self):
+        return dict(self.items())
 
     def _write(self):
         """Crufty hack"""
@@ -96,7 +102,6 @@ class Db(object):
         if not type(records) is list:
             records = [records]        
         records = self.put(key, records + [record])
-        assert(records == self.get(key))
         self._write()
         return records
 
