@@ -1,0 +1,2 @@
+(1) atomic transactions for batching 
+(2) fix _write() s.t. the db conn is not closed + reoppened during every write

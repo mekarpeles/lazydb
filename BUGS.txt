@@ -1,0 +1,16 @@
+Ye Olde Bug Tracker
+===================
+
+(1) Right now, _writes are performed after each modification to the
+flatfile using lazydb.
+
+One known workaround for the first problem is to allow users to wrap a
+batch or series of operations atomically within a lazydb.transact()
+transaction (not yet implemented) and then lazydb.commit multiple
+modifications at once.  This would drastically reduce file IO.
+
+(2) In order to make _write perform (write out) correctly, the
+connection to the file is closed and then re-oppened which is absurd.
+
+I am not positive why this is happening yet. This issue simply
+requires further investigation.
