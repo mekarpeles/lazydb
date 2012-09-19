@@ -64,7 +64,7 @@ class Db(object):
         existing record, use 'append'
         """
         self._db[key] = record
-        self._write()
+        self._write() # XXX see _write docstring
         return self.get(key)
 
     def has(self, key):        
