@@ -1,1 +1,5 @@
+v0.1.4, Tue 18 Sept 2012 -- Initial Release.
+- updated setup.py desc
+- added update() functionality
+
 v0.1.2, Tue 18 Sept 2012 -- Initial Release.

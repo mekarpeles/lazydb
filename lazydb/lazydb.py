@@ -105,6 +105,15 @@ class Db(object):
         self._write()
         return records
 
+    def update(self, key, index, record):
+        """Update a specific value entry/record specified by index
+        keyed by key. The index, i.e. the position of the entry to
+        update, is 0 indexed.
+        """
+        values = self.get(key)
+        values[index] = record
+        return self.put(key, values)
+
     @classmethod
     def create(cls, database):
         """Used for creating arbitrary tmp databases"""
