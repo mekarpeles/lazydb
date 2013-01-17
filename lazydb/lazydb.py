@@ -24,7 +24,7 @@ class Db(object):
         previously existed.
         """
         self._name = db_name
-        self._file = "{}/{}".format(db_path, db_name)
+        self._file = "%s/%s" % (db_path, db_name)
         self._db = self.open()
 
     def open(self):
@@ -43,7 +43,9 @@ class Db(object):
         return dict(self.items())
 
     def _write(self):
-        """Crufty hack"""
+        """Crufty hack: Right now a new file handler is re-established
+        every time a write is performed to ensure modifications to the
+        shelve instance are saved / accepted."""
         self._db.close()
         self._db = self.open()
         
@@ -56,6 +58,8 @@ class Db(object):
             return True
 
     def get(self, key):
+        """Retrieves all values within this LazyDB database indexed by
+        this key. By default, an empty list is returned"""
         return self._db.get(key, [])
 
     def put(self, key, record):

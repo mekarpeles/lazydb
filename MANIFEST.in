@@ -1,2 +1,2 @@
 include *.txt
-recursive-includes dos *.txt
+recursive-includes docs *.txt
