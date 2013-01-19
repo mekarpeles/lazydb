@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='LazyDB',
-    version='0.1.4',
+    version='0.1.6',
     author='mek',
     author_email='michael.karpeles@gmail.com',
     packages=['lazydb', 'lazydb.test'],
