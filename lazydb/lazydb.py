@@ -17,14 +17,18 @@ from contextlib import closing
 
 class Db(object):
 
-    def __init__(self, db_name, db_path=os.getcwd()):
+    def __init__(self, db_path):
         """Creates a connection to a flatfile database located in
         db_path and named db_path using shelve wrappers. The database
         file will be created/touched during init, if no such file
         previously existed.
         """
-        self._name = db_name
-        self._file = "%s/%s" % (db_path, db_name)
+        if '/' not in db_path:
+            self._name = db_path
+            self._file = "%s/%s" % (os.getcwd(), self._name)
+        else:
+            self._name = db_path.split('/')[-1]
+            self._file = db_path
         self._db = self.open()
 
     def open(self):
