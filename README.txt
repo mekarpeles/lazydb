@@ -32,7 +32,7 @@ Typical usage often looks like this::
     	  def __init__(self, name):
 	      self.name = name
 
-    db = Db('mydb', '/home/user/')
+    db = Db('/home/user/db')
     db.put('user', LazyUser('lazybones'))
     u = db.get('user')
     u.name
