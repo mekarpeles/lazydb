@@ -15,6 +15,13 @@ import os
 import shelve
 from contextlib import closing
 
+class DBdefval(object):
+    """Placeholder type for LazyDB default return value in the event a
+    key is accessed when it doesn't exist (instead of raising an
+    Exception)
+    """
+    pass
+
 class Db(object):
 
     def __init__(self, path):
@@ -61,10 +68,16 @@ class Db(object):
             del self._db[key]
             return True
 
-    def get(self, key):
+    def get(self, key, default=DBdefval):
         """Retrieves all values within this LazyDB database indexed by
-        this key. By default, an empty list is returned"""
-        return self._db.get(key, [])
+        this key. By default, an empty list is returned. Works similar
+        to dict.get with default value if key doesn't exist.  Safely
+        sets default as [] while carefully avoiding / preventing
+        stateful decl of kwarg=[] within params list.
+        """
+        if default is DBdefval:
+            default = []
+        return self._db.get(key, default)
 
     def put(self, key, record):
         """Adds a new key,val pair into the db. This will overwrite an
