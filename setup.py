@@ -3,7 +3,7 @@ from sys import version
 import os
 
 if version < '2.7' or version >= '3.0':
-    raise NotImplemented("LazyDb requires Python 2.7.*")
+    raise NotImplementedError("LazyDb requires Python 2.7.*")
 
 setup(
     name='LazyDB',
