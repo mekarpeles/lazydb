@@ -1,6 +1,8 @@
 LazyDB
 ======
 
+![Build Status](https://travis-ci.org/mekarpeles/lazydb.png)
+
 LazyDB is a basic wrapper around the Python shelve flatfile dbm
 module. LazyDB provides a couchdb/S3 like layer of abstraction around
 shelve, allowing convenient access (read and write) to shelve without
