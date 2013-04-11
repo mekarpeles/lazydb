@@ -25,7 +25,7 @@ Typical usage often looks like this::
 
     #!/usr/bin/env Python
     
-    from lazydb.lazydb import Db
+    from lazydb import Db
 
     class LazyUser:
     	  def __init__(self, name):
