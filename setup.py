@@ -1,8 +1,8 @@
 from distutils.core import setup
 from sys import version
 
-if version < '2.7':
-    raise NotImplemented("LazyDb requires Python 2.7 or greater.")
+if version < '2.7' or version >= '3.0':
+    raise NotImplemented("LazyDb requires Python 2.7.*")
 
 setup(
     name='LazyDB',
