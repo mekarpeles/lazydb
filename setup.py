@@ -5,7 +5,7 @@ setup(
     version='0.1.6',
     author='mek',
     author_email='michael.karpeles@gmail.com',
-    packages=['lazydb', 'lazydb.test'],
+    packages=['lazydb'],
     scripts=[],
     url='http://pypi.python.org/pypi/LazyDB',
     license='LICENSE.txt',
