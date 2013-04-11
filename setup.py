@@ -1,5 +1,6 @@
 from distutils.core import setup
 from sys import version
+import os
 
 if version < '2.7' or version >= '3.0':
     raise NotImplemented("LazyDb requires Python 2.7.*")
@@ -14,5 +15,5 @@ setup(
     url='http://pypi.python.org/pypi/LazyDB',
     license='LICENSE.txt',
     description="LazyDB is a basic wrapper around the Python shelve flatfile dbm module.",
-    long_description=open('README.md').read(),
+    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 )
