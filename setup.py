@@ -7,7 +7,7 @@ if version < '2.7' or version >= '3.0':
 
 setup(
     name='LazyDB',
-    version='0.1.62',
+    version='0.1.64',
     author='mek',
     author_email='michael.karpeles@gmail.com',
     packages=['lazydb'],
