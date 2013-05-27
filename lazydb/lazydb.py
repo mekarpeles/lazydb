@@ -68,7 +68,7 @@ class Db(object):
             del self._db[key]
             return True
 
-    def get(self, key, default=DBdefval):
+    def get(self, key, default=DBdefval, touch=False):
         """Retrieves all values within this LazyDB database indexed by
         this key. By default, an empty list is returned. Works similar
         to dict.get with default value if key doesn't exist.  Safely
@@ -77,7 +77,12 @@ class Db(object):
         """
         if default is DBdefval:
             default = []
-        return self._db.get(key, default)
+        try:
+            return self._db.get(key, default)
+        except KeyError:
+            if touch:
+                return self._db.put(key, default)
+            raise KeyError(e)
 
     def put(self, key, record):
         """Adds a new key,val pair into the db. This will overwrite an
