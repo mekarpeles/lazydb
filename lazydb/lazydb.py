@@ -78,8 +78,8 @@ class Db(object):
         if default is DBdefval:
             default = []
         try:
-            if touch:
-                return self._db.put(key, default)
+            if not self.has(key) and touch:
+                return self.put(key, default)
             return self._db.get(key, default)
         except KeyError:
             raise KeyError(e)
