@@ -78,10 +78,10 @@ class Db(object):
         if default is DBdefval:
             default = []
         try:
-            return self._db.get(key, default)
-        except KeyError:
             if touch:
                 return self._db.put(key, default)
+            return self._db.get(key, default)
+        except KeyError:
             raise KeyError(e)
 
     def put(self, key, record):
