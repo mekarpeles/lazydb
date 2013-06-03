@@ -8,4 +8,4 @@ __author__ = [
 ]
 __license__ = "public domain"
 __contributors__ = "see AUTHORS"
-from lazydb import Db
+from lazydb import Db, Orm
