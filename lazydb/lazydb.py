@@ -13,7 +13,9 @@
 
 import os
 import shelve
+import cPickle
 from contextlib import closing
+from utils import Storage
 
 class DBdefval(object):
     """Placeholder type for LazyDB default return value in the event a
@@ -81,8 +83,8 @@ class Db(object):
             if not self.has(key) and touch:
                 return self.put(key, default)
             return self._db.get(key, default)
-        except KeyError:
-            raise KeyError(e)
+        except (IndexError, KeyError, cPickle.UnpicklingError):
+            return default
 
     def put(self, key, record):
         """Adds a new key,val pair into the db. This will overwrite an
@@ -150,3 +152,71 @@ class Db(object):
     def destroy(self, database):
         """Used for cleanup of arbitrary tmp databases"""
         return os.remove(database)
+
+def Orm(dbname, table):
+    db = lambda: Db(dbname)
+
+    class LazyOrm(Storage):
+
+        def __init__(self, uuid, entity=None):
+            self._uuid = uuid
+            entity = entity if entity else self.get(uuid)
+            try:
+                for k, v in entity.items():
+                    setattr(self, k, v)
+            except (AttributeError, IndexError) as e:
+                raise e
+
+        def __repr__(self):     
+            return '<LazyOrm ' + repr(dict(self)) + '>'
+
+        def save(self, fmt=dict):
+            """save the state of the current item in the db; replace
+            existing databased item (if it exists) with this dict() repr
+            of this instance, or insert it otherwise
+            """
+            uuid = self.pop('_uuid')
+            vals = db().get(table, default=fmt())
+            if fmt is list:
+                vals += dict(self)
+                uuid = len(vals)-1
+            else:
+                vals.update({uuid: dict(self)})
+            setattr(self, '_uuid', uuid)
+            return db().put(table, vals)
+
+        @classmethod
+        def getall(cls, uuids=all, default=DBdefval, touch=True):
+            vals = db().get(table, default=default, touch=touch)
+            if uuids is not all:
+                if type(vals) is dict:                    
+                    vals = dict(filter(lambda k, v: k in uuids, vals.items()))
+                else:
+                    vals = [v for i, v in enumerate(vals) if i in uuids]
+            return vals
+
+        @classmethod
+        def get(cls, uuid, default=DBdefval, touch=True):
+            """
+            """
+            vals = cls.getall(touch=True)
+            try:
+                return vals[uuid]
+            except (KeyError, IndexError):
+                return default
+
+        @classmethod
+        def insert(cls, item, uuid=None):
+            """
+            """
+            default = {} if uuid is None else []
+            vals = db().get(table, default=default, touch=True)
+            if uuid:
+                vals[uuid] = item
+            else:
+                vals += item
+                uuid = len(vals)-1
+            vals = db().put(table, vals)
+            return uuid
+
+    return LazyOrm
