@@ -1,3 +1,6 @@
+v.0.1.65 April 100, 2013 -- LazyBoy
+- added an Orm wrapper to compliment Db
+
 v.0.1.62 April 10, 2013 -- Surfer
 - Fixed User and Author classes for safe mode
 - Fixed test cases (updated them for 0.1.6)
