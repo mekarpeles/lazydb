@@ -177,8 +177,9 @@ def Orm(dbname, table):
             """
             uuid = self.pop('_uuid')
             vals = db().get(table, default=fmt())
+            print dict(self), vals
             if fmt is list:
-                vals += dict(self)
+                vals.append(dict(self))
                 uuid = len(vals)-1
             else:
                 vals.update({uuid: dict(self)})
