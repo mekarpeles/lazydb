@@ -158,11 +158,12 @@ def Orm(dbname, table):
 
     class LazyOrm(Storage):
 
-        def __init__(self, uuid, entity=None):
-            self._uuid = uuid
-            entity = entity if entity else self.get(uuid)
+        def __init__(self, uuid=None, **data):
+            if uuid:
+                self._uuid = uuid
+                data = data if data else self.get(uuid)
             try:
-                for k, v in entity.items():
+                for k, v in data.items():
                     setattr(self, k, v)
             except (AttributeError, IndexError) as e:
                 raise e
@@ -170,25 +171,39 @@ def Orm(dbname, table):
         def __repr__(self):     
             return '<LazyOrm ' + repr(dict(self)) + '>'
 
-        def save(self, fmt=dict):
+        def save(self):
             """save the state of the current item in the db; replace
             existing databased item (if it exists) with this dict() repr
             of this instance, or insert it otherwise
             """
-            uuid = self.pop('_uuid')
-            vals = db().get(table, default=fmt())
-            print dict(self), vals
-            if fmt is list:
-                vals.append(dict(self))
-                uuid = len(vals)-1
-            else:
-                vals.update({uuid: dict(self)})
+            uuid = self.pop('_uuid', None)
+            uuid = self.insert(dict(self), uuid=uuid)
             setattr(self, '_uuid', uuid)
-            return db().put(table, vals)
+            return uuid
 
         @classmethod
-        def getall(cls, uuids=all, default=DBdefval, touch=True):
-            vals = db().get(table, default=default, touch=touch)
+        def insert(cls, item, uuid=None):
+            """
+            """
+            default = [] if uuid is None else {}
+            vals = db().get(table, default=default, touch=True)
+
+            if uuid and type(vals) is dict:
+                vals.update({uuid: item})
+            else:
+                try:
+                    vals.append(item)
+                    uuid = len(vals)-1
+                except AttributeError as e:
+                    raise AttributeError('%s: Table %s.%s is of type dict and ' \
+                                             "requires key 'uuid' for insertion." \
+                                             % (e, db._name, table))
+            vals = db().put(table, vals)       
+            return uuid
+
+        @classmethod
+        def getall(cls, uuids=all, default=DBdefval):
+            vals = db().get(table, default=default)
             if uuids is not all:
                 if type(vals) is dict:                    
                     vals = dict(filter(lambda k, v: k in uuids, vals.items()))
@@ -197,27 +212,13 @@ def Orm(dbname, table):
             return vals
 
         @classmethod
-        def get(cls, uuid, default=DBdefval, touch=True):
+        def get(cls, uuid, default=DBdefval):
             """
             """
-            vals = cls.getall(touch=True)
+            vals = cls.getall()
             try:
                 return vals[uuid]
             except (KeyError, IndexError):
                 return default
-
-        @classmethod
-        def insert(cls, item, uuid=None):
-            """
-            """
-            default = {} if uuid is None else []
-            vals = db().get(table, default=default, touch=True)
-            if uuid:
-                vals[uuid] = item
-            else:
-                vals += item
-                uuid = len(vals)-1
-            vals = db().put(table, vals)
-            return uuid
 
     return LazyOrm
