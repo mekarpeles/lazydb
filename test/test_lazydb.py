@@ -1,7 +1,7 @@
 import unittest
 import uuid
 import os
-from lazydb.lazydb import Db
+from lazydb.lazydb import Db, Orm
 
 class LazyUser:
     def __init__(self, name):
@@ -20,6 +20,24 @@ class TestLazyDB(unittest.TestCase):
         self.assertTrue(os.path.exists(DB_PATH),
                         "Database creation failed.")
         
+    def test_orm_dict(self):
+        Item = Orm(DB_PATH, TEST_KEY)
+        i = Item(TEST_KEY, **TEST_ITEM)
+        i.save()
+        items = i.getall()        
+        self.assertTrue(TEST_KEY in items[TEST_KEY] and \
+                            items[TEST_KEY][TEST_KEY].name ==  TEST_VAL.name,
+                        "Item not added correctly to dict style ORM: %s" % items)
+
+    def test_orm_list(self):
+        Item = Orm(DB_PATH, TEST_KEY)
+        i = Item(**TEST_ITEM)
+        i.save()
+        items = i.getall()
+        self.assertTrue(TEST_KEY in items[0] and \
+                            items[0][TEST_KEY].name == TEST_VAL.name,
+                   "Item not added correctly to list style ORM: %s" % items)
+
     def test_put(self):
         db = Db(DB_PATH)
         db.put(TEST_KEY, TEST_VAL)
