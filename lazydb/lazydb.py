@@ -2,7 +2,7 @@
 """
     lazydb.py
     ~~~~~~~~~
-    LazyDB is a basic wrapper around the Python shelve flatfilqe dbm
+    LazyDB is a basic wrapper around the Python shelve flatfile dbm
     module. LazyDB provides a couchdb/S3 like layer of abstraction around
     shelve, allowing convenient access (read and write) to shelve without
     sacrificing the convenience of writing pickled python objects to disk.
