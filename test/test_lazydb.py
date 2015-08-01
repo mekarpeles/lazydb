@@ -46,7 +46,7 @@ class TestLazyDB(unittest.TestCase):
         db = Db(DB_PATH)
         db.put(TEST_KEY, TEST_VAL)
         db_val = db.get(TEST_KEY)
-        print "PUT: %s, GET: %s" % (TEST_ITEM, db_val)
+        print("PUT: %s, GET: %s" % (TEST_ITEM, db_val))
         self.assertTrue(db_val.__dict__ == TEST_VAL.__dict__,
                         "Failed to 'put' TEST_ITEM %s "
                         "into %s" % (TEST_ITEM, DB_NAME))
@@ -69,7 +69,7 @@ class TestLazyDB(unittest.TestCase):
         db.put(TEST_KEY, TEST_VAL)
         db.append(TEST_KEY, TEST_VAL)
         db_val = db.get(TEST_KEY)
-        print "APPEND: %s, GET: %s" % (TEST_ITEM, db_val)
+        print("APPEND: %s, GET: %s" % (TEST_ITEM, db_val))
         self.assertTrue(map(lambda x: x.__class__, db_val) ==
                         map(lambda x: x.__class__, [TEST_VAL] * 2),
                         "Failed to 'append' TEST_ITEM %s "

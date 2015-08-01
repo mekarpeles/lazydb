@@ -42,4 +42,3 @@ nosetests.xml
 dist
 build
 LazyDB.egg-info
-
