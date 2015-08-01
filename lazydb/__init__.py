@@ -2,7 +2,7 @@
 
 """LazyDB is a basic wrapper around the Python shelve flatfile dbm module."""
 
-__version__ = "0.1.67"
+__version__ = "0.1.70"
 __author__ = [
     "Mek <michael.karpeles@gmail.com>"
 ]
