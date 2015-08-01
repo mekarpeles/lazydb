@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
     lazydb.py
     ~~~~~~~~~
@@ -13,9 +13,14 @@
 
 import os
 import shelve
-import cPickle
 from contextlib import closing
-from utils import Storage
+from .utils import Storage
+
+try:
+    import pickle
+except ImportError:
+    import cPickle as pickle
+
 
 class DBdefval(object):
     """Placeholder type for LazyDB default return value in the event a
@@ -23,6 +28,7 @@ class DBdefval(object):
     Exception)
     """
     pass
+
 
 class Db(object):
 
@@ -61,7 +67,7 @@ class Db(object):
         shelve instance are saved / accepted."""
         self._db.close()
         self._db = self.open()
-        
+
     def _destroy(self):
         return os.remove(self._file)
 
@@ -83,7 +89,7 @@ class Db(object):
             if not self.has(key) and touch:
                 return self.put(key, default)
             return self._db.get(key, default)
-        except (IndexError, KeyError, cPickle.UnpicklingError):
+        except (IndexError, KeyError, pickle.UnpicklingError):
             return default
 
     def put(self, key, record):
@@ -92,11 +98,11 @@ class Db(object):
         existing record, use 'append'
         """
         self._db[key] = record
-        self._write() # XXX see _write docstring
+        self._write()  # XXX see _write docstring
         return self.get(key)
 
-    def has(self, key):        
-        """Determines whether a key exists within the database"""        
+    def has(self, key):
+        """Determines whether a key exists within the database"""
         return key in self.keys()
 
     def count(self, key):
@@ -112,7 +118,7 @@ class Db(object):
     def size(self):
         """Returns the size of the database in number of entries"""
         return len(self.keys())
-    
+
     def keys(self):
         """List keys in the db"""
         return self._db.keys()
@@ -128,7 +134,7 @@ class Db(object):
         """should only work if obj @ key is type([])"""
         records = self.get(key)
         if not type(records) is list:
-            records = [records]        
+            records = [records]
         records = self.put(key, records + [record])
         self._write()
         return records
@@ -153,6 +159,7 @@ class Db(object):
         """Used for cleanup of arbitrary tmp databases"""
         return os.remove(database)
 
+
 def Orm(dbname, table):
     db = lambda: Db(dbname)
 
@@ -168,7 +175,7 @@ def Orm(dbname, table):
             except (AttributeError, IndexError) as e:
                 raise e
 
-        def __repr__(self):     
+        def __repr__(self):
             return '<LazyOrm ' + repr(dict(self)) + '>'
 
         def save(self):
@@ -195,17 +202,17 @@ def Orm(dbname, table):
                     vals.append(item)
                     uuid = len(vals)-1
                 except AttributeError as e:
-                    raise AttributeError('%s: Table %s.%s is of type dict and ' \
-                                             "requires key 'uuid' for insertion." \
-                                             % (e, db._name, table))
-            vals = db().put(table, vals)       
+                    raise AttributeError('%s: Table %s.%s is of type dict and '
+                                         "requires key 'uuid' for insertion."
+                                         % (e, db._name, table))
+            vals = db().put(table, vals)
             return uuid
 
         @classmethod
         def getall(cls, uuids=all, default=DBdefval):
             vals = db().get(table, default=default)
             if uuids is not all:
-                if type(vals) is dict:                    
+                if type(vals) is dict:
                     vals = dict(filter(lambda k, v: k in uuids, vals.items()))
                 else:
                     vals = [v for i, v in enumerate(vals) if i in uuids]
