@@ -61,19 +61,13 @@ class Db(object):
     def dict(self):
         return dict(self.items())
 
-    def _write(self):
-        """Crufty hack: Right now a new file handler is re-established
-        every time a write is performed to ensure modifications to the
-        shelve instance are saved / accepted."""
-        self._db.close()
-        self._db = self.open()
-
     def _destroy(self):
         return os.remove(self._file)
 
     def delete(self, key):
         if self.has(key):
             del self._db[key]
+            self._db.sync()
             return True
 
     def get(self, key, default=DBdefval, touch=False):
@@ -98,7 +92,7 @@ class Db(object):
         existing record, use 'append'
         """
         self._db[key] = record
-        self._write()  # XXX see _write docstring
+        self._db.sync()
         return self.get(key)
 
     def has(self, key):
@@ -128,7 +122,7 @@ class Db(object):
         return [self.get(key) for key in self.keys()]
 
     def items(self):
-        return [(key, self.get(key)) for key in self.keys()]
+        return ((key, self.get(key)) for key in self.keys())
 
     def append(self, key, record):
         """should only work if obj @ key is type([])"""
@@ -136,7 +130,7 @@ class Db(object):
         if not type(records) is list:
             records = [records]
         records = self.put(key, records + [record])
-        self._write()
+        self._db.sync()
         return records
 
     def update(self, key, index, record):
