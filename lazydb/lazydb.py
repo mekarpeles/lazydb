@@ -74,6 +74,7 @@ class Db(object):
     def delete(self, key):
         if self.has(key):
             del self._db[key]
+            self._write()
             return True
 
     def get(self, key, default=DBdefval, touch=False):
@@ -128,7 +129,7 @@ class Db(object):
         return [self.get(key) for key in self.keys()]
 
     def items(self):
-        return [(key, self.get(key)) for key in self.keys()]
+        return ((key, self.get(key)) for key in self.keys())
 
     def append(self, key, record):
         """should only work if obj @ key is type([])"""
