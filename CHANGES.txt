@@ -1,6 +1,20 @@
+v.0.1.80 July 03, 2016 -- Apathy
+
+v.0.1.70 August 01, 2015 -- Bones
+
+v.0.1.66 June 05, 2013 -- Recliner
+- Fixed Orm wrapper insertion
+
+v.0.1.65 April 10, 2013 -- LazyBoy
+- added an Orm wrapper to compliment Db
+
 v0.1.64, Mon 27, 2013 -- Lazy Susan
 - added touch keyword to .get()
 - provided test cases for .get() to test KeyError w/ touch keyword
+
+v.0.1.62 April 10, 2013 -- Surfer
+- Fixed User and Author classes for safe mode
+- Fixed test cases (updated them for 0.1.6)
 
 v0.1.6, Sat 19, 2013 
 - Reverted new style string formatting to %s for backwards compatability to Python2.6
